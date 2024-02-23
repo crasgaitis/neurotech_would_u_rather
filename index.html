@@ -4,56 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Card Game</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
+        background-color: black;
+        color: white;
     }
     #cardContainer {
         display: flex;
         justify-content: center;
-        margin-top: 50px;
+        margin-top: 10px;
     }
     .card {
-        width: 100px;
-        height: 150px;
-        border: 1px solid #000;
+        width: 250px;
+        height: 200px;
+        border: 1px solid #a8aee9;
+        padding: 20px;
         margin: 0 10px;
         cursor: pointer;
+        border-radius: 20px;
+        background-color: #2c2e46;
     }
     #result {
         margin-top: 20px;
     }
+    img{
+        margin-top: 100px
+    }
 </style>
 </head>
 <body>
-<h1>Card Game</h1>
+<img src = "dark_synaptech_logo_transparent.png" style = "max-width: 300px; padding: 0">
+<h1>Synaptech - NeuroWYR</h1>
+<p>Would you rather... </p>
 <div id="cardContainer">
     <div class="card" id="card1"></div>
     <div class="card" id="card2"></div>
 </div>
+<br/>
 <button onclick="drawCards()">Draw</button>
-<div id="result"></div>
+<button onclick="reveal()">Reveal</button>
 
 <script>
-let deck1 = [];
-let deck2 = [];
 
+// Function to initialize decks with shuffled cards
 function initDecks() {
-    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
-    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-
-    for (let suit of suits) {
-        for (let value of values) {
-            deck1.push(`${value} of ${suit}`);
-            deck2.push(`${value} of ${suit}`);
-        }
-    }
-
-    // shuffle deck
     deck1 = shuffle(deck1);
     deck2 = shuffle(deck2);
 }
+
+function splitDeck(fullDeck) {
+    // shuffle the full deck
+    let shuffledDeck = shuffle(fullDeck.slice());
+    
+    // calculate the size of each subset
+    let subsetSize = Math.floor(fullDeck.length / 2);
+
+    // extract subsets
+    let deck1 = shuffledDeck.slice(0, subsetSize);
+    let deck2 = shuffledDeck.slice(subsetSize);
+
+    return [deck1, deck2];
+}
+
+let fullDeck = [
+    "have a BCI that lets you instantly learn any skill, but you lose some of your memories every time you use it",
+    "have a BCI that gives you superhuman memory, but gives you intense mood swings",
+    "have your consciousness uploaded into a digital form for anyone to use",
+    "have a bionic arm",
+    "have a bionic leg",
+    "have a neuro-controlled drone swarm that obeys your commands",
+    "be able to implant false memories into your own mind or the minds of others",
+    "be able to upload and share your memories with others",
+    "have a neurotech device that allows you to experience the sensations of different environments without physically being there",
+    "be able to control your own brainwaves to induce different mental states (e.g., focus, relaxation, creativity)",
+    "be able to read and send thoughts with your best friend, but a random thought is shared publicly each day",
+    "be responsible for launching a commercialized Neuralink product - but 5% of users experience security breaches",
+    "have your pet receive an implant that converts its thoughts into human language, but you can never turn it off",
+    "have a device that lets you experience someone else's dreams vividly for a night",
+    "have a neural implant that gives you the ability to speak to animals but also makes you randomly meow or bark in conversation",
+    "have a neural implant that predicts when you're about to do something clumsy and stops you",
+    "have a brain implant that enhances your sense of humor but also makes you laugh at your own jokes for 15 minutes nonstop",
+    "have a BCI that enables you to control devices with your thoughts but requires sharing your personal brain data with a corporation",
+    "be responsible for building a neuroscience-inspired LLM that outperforms GPT4, but is gaining sentience",
+    "have a BCI that regulates your hormones so you're never sad",
+    "live in a techno-dictatorship, where BCIs are only available to the upper 1% who live like superheroes",
+    "have a BCI that allows you to compose and experience music directly from your thoughts, but it also amplifies your inner critic's voice to the point of debilitating self-doubt",
+    "be part of a society where BCIs are mandatory from birth, granting access to education, healthcare, and basic necessities, but you get 20 minutes of ads every day",
+    "choose to undergo a risky experimental procedure that enhances your physical abilities through BCI, but leaves you susceptible to hackers",
+    "design a wildly popular and fashionable line of prosthetics, but the materials used are unsustainable and contribute significantly to environmental degradation",
+    "spontaneously develop synthesia, a neurological condition where your senses mix together (ex: tasting colors, hearing textures)",
+    "develop Capgras Syndrome (you can't recognize friends/family and think they're impostors), but get paid a lot of money for undergoing experimental treatment",
+    "have a BCI that lets you control your perception of physical pain, but you develop Ekbom's Syndrome (think there's bugs in your skin)"
+    ];
+
+// define card decks
+let [deck1, deck2] = splitDeck(fullDeck);
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -63,28 +111,47 @@ function shuffle(array) {
     return array;
 }
 
-// draw
 function drawCards() {
     if (deck1.length === 0 || deck2.length === 0) {
         alert('No more cards to draw!');
         return;
     }
 
-    const card1 = deck1.pop();
-    const card2 = deck2.pop();
+    resetHighlights();
+
+    let card1, card2;
+    do {
+        card1 = deck1.pop();
+        card2 = deck2.pop();
+    } while (card1 === card2); // ensure cards are not the same
 
     document.getElementById('card1').innerText = card1;
     document.getElementById('card2').innerText = card2;
 }
 
-// reveal selected card
-function reveal(cardId) {
-    const selectedCard = document.getElementById(cardId);
-    selectedCard.style.backgroundColor = 'yellow';
-    document.getElementById('result').innerText = `You selected: ${selectedCard.innerText}`;
+function reveal() {
+    const selectedCard = document.querySelector('.card.highlighted');
+    if (selectedCard) {
+        selectedCard.style.backgroundColor = '#6633CC';
+    } else {
+        alert('Please select a card first!');
+    }
 }
 
-// init decks and draw initial cards
+function resetHighlights() {
+    document.querySelectorAll('.card').forEach(card => {
+        card.classList.remove('highlighted');
+        card.style.backgroundColor = '';
+    });
+}
+
+document.querySelectorAll('.card').forEach(item => {
+    item.addEventListener('click', () => {
+        resetHighlights();
+        item.classList.add('highlighted');
+    });
+});
+
 initDecks();
 drawCards();
 </script>
